@@ -4,6 +4,7 @@ import "context"
 
 // Tx mock
 type Tx struct {
+	conn                *Conn
 	ctx                 context.Context
 	ExpectedCommitErr   error
 	ExpectedRollbackErr error
