@@ -26,7 +26,9 @@ func (c *Conn) Prepare(query string) (driver.Stmt, error) {
 }
 
 // Close do nothing
-func (c *Conn) Close() error { return c.ExpectedCloseErr }
+func (c *Conn) Close() error {
+	return c.ExpectedCloseErr
+}
 
 // Begin starts a new transaction
 func (c *Conn) Begin() (driver.Tx, error) {
