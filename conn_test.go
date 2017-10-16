@@ -112,32 +112,36 @@ func TestBegin(t *testing.T) {
 
 func TestConnExec(t *testing.T) {
 	candidates := []struct {
-		Query           string
-		ExpectedExecErr error
-		ExpectedResult  *sqlmock.Result
+		Name           string
+		Query          string
+		ExpectedErr    error
+		ExpectedResult *sqlmock.Result
 	}{
 		{
-			"INSERT INTO mock VALUES('hoge');",
-			nil,
-			&sqlmock.Result{
+			Name:        "normal query",
+			Query:       "INSERT INTO mock VALUES('hoge');",
+			ExpectedErr: nil,
+			ExpectedResult: &sqlmock.Result{
 				ExpectedLastInsertID: 1,
 				ExpectedRowsAffected: 1,
 			},
 		},
 		{
-			"",
-			errors.New("query is empty"),
-			nil,
+			Name:           "empty query with error",
+			Query:          "",
+			ExpectedErr:    errors.New("query is empty"),
+			ExpectedResult: nil,
 		},
 	}
 	for _, c := range candidates {
+		t.Log(c.Name)
 		conn := sqlmock.Conn{
-			ExpectedExecErr: c.ExpectedExecErr,
+			ExpectedExecErr: c.ExpectedErr,
 			ExpectedResult:  c.ExpectedResult,
 		}
 		r, err := conn.Exec(c.Query, nil)
-		if err != c.ExpectedExecErr {
-			t.Errorf(`"%s" != "%s"`, err, c.ExpectedExecErr)
+		if err != c.ExpectedErr {
+			t.Errorf(`"%s" != "%s"`, err, c.ExpectedErr)
 			return
 		}
 		if err != nil {
