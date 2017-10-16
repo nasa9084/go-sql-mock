@@ -9,7 +9,12 @@ import (
 var pool *Driver
 
 func init() {
-	pool = &Driver{}
+	pool = &Driver{
+		conn: &Conn{
+			ExpectedResult: &Result{},
+			ExpectedRows: &Rows{},
+		},
+	}
 	sql.Register("sqlmock", pool)
 }
 

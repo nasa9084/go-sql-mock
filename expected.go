@@ -8,6 +8,9 @@ type RowsOpts func(*Driver) error
 // Columns define ExpectedRows' Columns
 func Columns(cols []string) RowsOpts {
 	return RowsOpts(func(d *Driver) error {
+		if d.conn == nil {
+			return driver.ErrBadConn
+		}
 		d.conn.ExpectedRows.ExpectedColumns = cols
 		return nil
 	})
@@ -16,6 +19,9 @@ func Columns(cols []string) RowsOpts {
 // ValuesList define ExpectedRows' ValuesList
 func ValuesList(valuesList [][]driver.Value) RowsOpts {
 	return RowsOpts(func(d *Driver) error {
+		if d.conn == nil {
+			return driver.ErrBadConn
+		}
 		d.conn.ExpectedRows.ExpectedValuesList = valuesList
 		return nil
 	})
