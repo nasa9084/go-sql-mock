@@ -51,27 +51,27 @@ func TestPing(t *testing.T) {
 
 func TestPrepare(t *testing.T) {
 	candidates := []struct {
-		Name string
+		Name        string
 		Query       string
 		Args        []driver.Value
 		ExpectedErr error
 	}{
 		{
-			Name: "normal select",
-			Query: "SELECT * FROM mock",
-			ExpectedErr:   nil,
-		},{
-			Name: "select with placeholder",
-			Query: "SELECT * FROM mock WHERE id=?",
-			Args: []driver.Value{"something"},
+			Name:        "normal select",
+			Query:       "SELECT * FROM mock",
 			ExpectedErr: nil,
-		},{
-			Name: "empty query",
-			Query: "",
-			ExpectedErr:   nil,
-		},{
-			Name: "empty query and expectedErr",
-			Query: "",
+		}, {
+			Name:        "select with placeholder",
+			Query:       "SELECT * FROM mock WHERE id=?",
+			Args:        []driver.Value{"something"},
+			ExpectedErr: nil,
+		}, {
+			Name:        "empty query",
+			Query:       "",
+			ExpectedErr: nil,
+		}, {
+			Name:        "empty query and expectedErr",
+			Query:       "",
 			ExpectedErr: errors.New("query is empty"),
 		},
 	}
