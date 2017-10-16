@@ -19,10 +19,7 @@ type Conn struct {
 
 // Prepare returns a prepared statement
 func (c *Conn) Prepare(query string) (driver.Stmt, error) {
-	if c.ExpectedPrepareErr != nil {
-		return nil, c.ExpectedPrepareErr
-	}
-	return &Stmt{conn: c, query: query}, nil
+	return c.PrepareContext(context.Background(), query)
 }
 
 // Close do nothing
@@ -32,10 +29,7 @@ func (c *Conn) Close() error {
 
 // Begin starts a new transaction
 func (c *Conn) Begin() (driver.Tx, error) {
-	if c.ExpectedBeginErr != nil {
-		return nil, c.ExpectedBeginErr
-	}
-	return &Tx{}, nil
+	return c.BeginTx(context.Background(), driver.TxOptions{})
 }
 
 // BeginTx implements driver.ConnBeginTx to Conn
@@ -56,10 +50,7 @@ func (c *Conn) PrepareContext(ctx context.Context, query string) (driver.Stmt, e
 
 // Exec implements driver.Execer to Conn
 func (c *Conn) Exec(query string, args []driver.Value) (driver.Result, error) {
-	if c.ExpectedExecErr != nil {
-		return nil, c.ExpectedExecErr
-	}
-	return c.ExpectedResult, nil
+	return c.ExecContext(context.Background(), query, namedValues(args))
 }
 
 // ExecContext implements driver.ExecerContext to Conn
@@ -80,10 +71,7 @@ func (c *Conn) Ping(ctx context.Context) error {
 
 // Query implements driver.Queryer to Conn
 func (c *Conn) Query(query string, args []driver.Value) (driver.Rows, error) {
-	if c.ExpectedQueryErr != nil {
-		return nil, c.ExpectedQueryErr
-	}
-	return c.ExpectedRows, nil
+	return c.QueryContext(context.Background(), query, namedValues(args))
 }
 
 // QueryContext implements driver.QueryerContext to Conn
@@ -92,4 +80,12 @@ func (c *Conn) QueryContext(ctx context.Context, query string, args []driver.Nam
 		return nil, c.ExpectedQueryErr
 	}
 	return c.ExpectedRows, nil
+}
+
+func namedValues(values []driver.Value) []driver.NamedValue {
+	nv := make([]driver.NamedValue, len(values))
+	for i, v := range values {
+		nv[i] = driver.NamedValue{ Value: v }
+	}
+	return nv
 }
