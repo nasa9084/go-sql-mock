@@ -30,3 +30,23 @@ func (d *Driver) Open(name string) (driver.Conn, error) {
 
 	return d.conn, nil
 }
+
+// ExpectedRows configure global Driver
+func ExpectedRows(opts ...RowsOpts) error {
+	for _, opt := range opts {
+		if err := opt(pool); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// ExpectedResult configure global Driver
+func ExpectedResult(opts ...ResultOpts) error {
+	for _, opt := range opts {
+		if err := opt(pool); err != nil {
+			return err
+		}
+	}
+	return nil
+}
