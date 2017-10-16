@@ -51,22 +51,33 @@ func TestPing(t *testing.T) {
 
 func TestPrepare(t *testing.T) {
 	candidates := []struct {
+		Name string
 		Query       string
-		Err         error
+		Args        []driver.Value
 		ExpectedErr error
 	}{
 		{
+			Name: "normal select",
 			Query: "SELECT * FROM mock",
-			Err:   nil,
-		},
-		{
+			ExpectedErr:   nil,
+		},{
+			Name: "select with placeholder",
+			Query: "SELECT * FROM mock WHERE id=?",
+			Args: []driver.Value{"something"},
+			ExpectedErr: nil,
+		},{
+			Name: "empty query",
 			Query: "",
-			Err:   nil,
+			ExpectedErr:   nil,
+		},{
+			Name: "empty query and expectedErr",
+			Query: "",
+			ExpectedErr: errors.New("query is empty"),
 		},
 	}
 	for _, c := range candidates {
 		conn := sqlmock.Conn{
-			ExpectedPrepareErr: c.Err,
+			ExpectedPrepareErr: c.ExpectedErr,
 		}
 		stmt, err := conn.Prepare(c.Query)
 		if err != c.ExpectedErr {
