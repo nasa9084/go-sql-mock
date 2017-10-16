@@ -76,6 +76,7 @@ func TestPrepare(t *testing.T) {
 		},
 	}
 	for _, c := range candidates {
+		t.Log(c.Name)
 		conn := sqlmock.Conn{
 			ExpectedPrepareErr: c.ExpectedErr,
 		}
