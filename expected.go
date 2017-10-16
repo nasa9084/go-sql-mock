@@ -17,7 +17,7 @@ func Columns(cols []string) RowsOpts {
 }
 
 // ValuesList define ExpectedRows' ValuesList
-func ValuesList(valuesList [][]driver.Value) RowsOpts {
+func ValuesList(valuesList ...[]driver.Value) RowsOpts {
 	return RowsOpts(func(d *Driver) error {
 		if d.conn == nil {
 			return driver.ErrBadConn

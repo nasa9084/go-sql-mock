@@ -20,9 +20,7 @@ func TestDriver(t *testing.T) {
 func TestExpectedRows(t *testing.T) {
 	opts := []sqlmock.RowsOpts{
 		sqlmock.Columns([]string{"id", "name", "age"}),
-		sqlmock.ValuesList([][]driver.Value{
-			[]driver.Value{"something", "Alice", 10},
-		}),
+		sqlmock.ValuesList([]driver.Value{"something", "Alice", 10}),
 	}
 	db, err := sql.Open("sqlmock", "")
 	if err != nil {
