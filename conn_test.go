@@ -1,6 +1,7 @@
 package sqlmock_test
 
 import (
+	"context"
 	"database/sql/driver"
 	"errors"
 	"io"
@@ -24,6 +25,25 @@ func TestClose(t *testing.T) {
 		err := conn.Close()
 		if err != c.ExpectedCloseErr {
 			t.Errorf(`"%s" != "%s"`, err, c.ExpectedCloseErr)
+			return
+		}
+	}
+}
+
+func TestPing(t *testing.T) {
+	candidates := []struct {
+		CanPing  bool
+		Expected error
+	}{
+		{true, nil},
+		{false, driver.ErrBadConn},
+	}
+	for _, c := range candidates {
+		conn := sqlmock.Conn{
+			CanPing: c.CanPing,
+		}
+		if err := conn.Ping(context.Background()); err != c.Expected {
+			t.Errorf(`"%s" != "%s"`, err, c.Expected)
 			return
 		}
 	}
@@ -143,7 +163,7 @@ func TestConnQuery(t *testing.T) {
 			"SELECT * FROM mock",
 			nil,
 			&sqlmock.Rows{
-				ExpectedColumns:    []string{"id", "name", "age"},
+				ExpectedColumns: []string{"id", "name", "age"},
 				ExpectedValuesList: [][]driver.Value{
 					[]driver.Value{"something", "anything", 10},
 				},
