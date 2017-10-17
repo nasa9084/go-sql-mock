@@ -28,6 +28,7 @@ func ValuesList(valuesList ...[]driver.Value) RowsOpts {
 			return driver.ErrBadConn
 		}
 		d.conn.ExpectedRows.ExpectedValuesList = valuesList
+		d.conn.ExpectedRows.pos = 0
 		return nil
 	})
 }
