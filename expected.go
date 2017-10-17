@@ -2,6 +2,11 @@ package sqlmock
 
 import "database/sql/driver"
 
+// Expected returns current expected values
+func Expected() (*Result, *Rows) {
+	return pool.conn.ExpectedResult, pool.conn.ExpectedRows
+}
+
 // RowsOpts is used for arguments of ExpectedRows
 type RowsOpts func(*Driver) error
 
